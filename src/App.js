@@ -3,6 +3,7 @@ import React, { useRef, useState, useEffect } from "react";
 import * as tf from "@tensorflow/tfjs";
 import Webcam from "react-webcam";
 import "./App.css";
+import tfn from "@tensorflow/tfjs-node";
 import { nextFrame } from "@tensorflow/tfjs";
 // 2. TODO - Import drawing utility here
 // e.g. import { drawRect } from "./utilities";
@@ -17,8 +18,9 @@ function App() {
     // 3. TODO - Load network
     // e.g. const net = await cocossd.load();
     // https://tensorflowjsrealtimemodel.s3.au-syd.cloud-object-storage.appdomain.cloud/model.json
-    const net = await tf.loadGraphModel(
-      "https://tensorflowjsrealtimemodel.s3.au-syd.cloud-object-storage.appdomain.cloud/model.json"
+    const net = await tf.loadLayersModel(
+      tfn.io.fileSystem("assests/model/model.json")
+      // "https://tensorflowjsrealtimemodel.s3.au-syd.cloud-object-storage.appdomain.cloud/model.json"
     );
 
     //  Loop and detect hands
@@ -53,12 +55,11 @@ function App() {
       const casted = resized.cast("int32");
       const expanded = casted.expandDims(0);
       const obj = await net.executeAsync(expanded);
-      console.log(obj);
-
+      console.log(obj, "obj");
       const boxes = await obj[1].array();
       const classes = await obj[2].array();
       const scores = await obj[4].array();
-
+      console.log(classes, "classes");
       // Draw mesh
       const ctx = canvasRef.current.getContext("2d");
 

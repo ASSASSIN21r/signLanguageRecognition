@@ -22,7 +22,7 @@ export const drawRect = (
       // Extract variables
       const [y, x, height, width] = boxes[i];
       const text = classes[i];
-
+      console.log(text);
       // Set styling
       ctx.strokeStyle = labelMap[text]["color"];
       ctx.lineWidth = 10;
